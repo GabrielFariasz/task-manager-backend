@@ -3,7 +3,6 @@ import { Task, TaskPriority } from '../../models/task/task'
 export interface AddTaskModel {
   name: string
   category: string
-  creationDate: Date
   limitDate: Date
   priority: TaskPriority
   owner: string
