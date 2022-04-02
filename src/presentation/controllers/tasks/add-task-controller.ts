@@ -1,3 +1,5 @@
+import { RequiredFieldError } from '../../errors/required-field-error'
+import { requestError } from '../../helpers/http-response'
 import { Controller } from '../../protocols/controller'
 import { HttpRequest, HttpResponse } from '../../protocols/http'
 
@@ -6,14 +8,11 @@ export class AddTaskController implements Controller {
     try {
       const requiredFields = ['name', 'owner', 'visibility', 'limitDate']
       for (const i of requiredFields) {
-        if (!httpRequest.body[i]) throw new Error(`MissingField: ${i}`)
+        if (!httpRequest.body[i]) throw new RequiredFieldError(i)
       }
       return null
     } catch (error) {
-      return {
-        statusCode: 400,
-        body: error
-      }
+      return requestError(error)
     }
   }
 }

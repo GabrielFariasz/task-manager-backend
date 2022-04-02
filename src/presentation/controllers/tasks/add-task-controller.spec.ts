@@ -1,10 +1,5 @@
+import { TaskPriority } from '../../../domain/models/task/task'
 import { AddTaskController } from './add-task-controller'
-
-enum Priority {
-  high = '1',
-  medium = '2',
-  low = '3'
-}
 
 describe('AddTask Controller', () => {
   test('Should return 400 if task name not provided', async () => {
@@ -13,10 +8,10 @@ describe('AddTask Controller', () => {
     const data = {
       body: {
         category: 'School',
-        createdDate: new Date(),
+        creationDate: new Date(),
         limitDate: new Date('01-01-2001'),
         owner: 'myself',
-        priority: Priority.high
+        priority: TaskPriority.high
       }
     }
 
@@ -32,9 +27,10 @@ describe('AddTask Controller', () => {
       body: {
         name: 'anyone',
         category: 'School',
-        createdDate: new Date(),
+        creationDate: new Date(),
         limitDate: new Date('01-01-2001'),
-        priority: Priority.high
+        priority: TaskPriority.high,
+        visibility: 'public'
       }
     }
 
@@ -50,9 +46,10 @@ describe('AddTask Controller', () => {
       body: {
         name: 'anyone',
         category: 'School',
-        createdDate: new Date(),
+        creationDate: new Date(),
         owner: 'myself',
-        priority: Priority.high
+        priority: TaskPriority.high,
+        visibility: 'public'
       }
     }
 
@@ -68,9 +65,9 @@ describe('AddTask Controller', () => {
       body: {
         name: 'anyone',
         category: 'School',
-        createdDate: new Date(),
+        creationDate: new Date(),
         owner: 'myself',
-        priority: Priority.high,
+        priority: TaskPriority.high,
         visibility: 'public'
       }
     }
