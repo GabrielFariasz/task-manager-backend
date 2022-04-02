@@ -1,4 +1,6 @@
-# ts-configs
+# Repo to practice SOLID and Clean Architecture
+
+## ts-configs
 
 Downloaded from a general purpose private repository =)
 
