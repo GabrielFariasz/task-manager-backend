@@ -7,38 +7,42 @@ const makeFakeTask = (): Task => ({
   id: 'any_id',
   name: 'any_name',
   category: 'any_category',
-  creationDate: new Date(),
+  creationDate: new Date('2022-01-01'),
   limitDate: new Date('2023-01-01'),
   priority: TaskPriority.medium,
   owner: 'any_owner',
   status: 'any_status'
 })
 
-describe('Db Add Task', () => {
-  test('Should throw if AddTaskRepository throws', async () => {
-    class AddTaskRepositoryStub implements AddTaskRepository {
-      async add (body: AddTaskModel): Promise<Task> {
-        return new Promise(resolve => resolve(makeFakeTask()))
-      }
+const makeAddTaskRepositoryStub = (): AddTaskRepository => {
+  class AddTaskRepositoryStub implements AddTaskRepository {
+    async add(body: AddTaskModel): Promise<Task> {
+      return new Promise(resolve => resolve(makeFakeTask()))
     }
+  }
 
-    const addTaskRepositoryStub = new AddTaskRepositoryStub()
-    jest.spyOn(addTaskRepositoryStub, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-    const sut = new DbAddTask(addTaskRepositoryStub)
+  return new AddTaskRepositoryStub()
+}
+
+const makeSut = (): DbAddTask => {
+  const addTaskRepositoryStub = makeAddTaskRepositoryStub()
+  return new DbAddTask(addTaskRepositoryStub)
+}
+
+describe('Db Add Task', () => {
+  test('Should throw if DbAddTask throws', async () => {
+    const sut = makeSut()
+
+    jest.spyOn(sut, 'add').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promiseResponse = sut.add(makeFakeTask())
     await expect(promiseResponse).rejects.toThrow()
   })
 
-  test('Should call AddTaskRepository with correct values', async () => {
-    class AddTaskRepositoryStub implements AddTaskRepository {
-      async add (body: AddTaskModel): Promise<Task> {
-        return new Promise(resolve => resolve(makeFakeTask()))
-      }
-    }
+  test('Should call DbAddTask with correct values', async () => {
+    const sut = makeSut()
+    const DbAddTaskSpy = jest.spyOn(sut, 'add')
 
-    const addTaskRepositoryStub = new AddTaskRepositoryStub()
-    const sut = new DbAddTask(addTaskRepositoryStub)
-    const response = await sut.add(makeFakeTask())
-    expect(response).toEqual(makeFakeTask())
+    await sut.add(makeFakeTask())
+    expect(DbAddTaskSpy).toHaveBeenCalledWith(makeFakeTask())
   })
 })
